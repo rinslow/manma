@@ -1,23 +1,28 @@
 import math
 
-from .utils import LEFT, RIGHT, PARENT
+
+def LEFT(index):
+    return 2 * index
+
+
+def RIGHT(index):
+    return LEFT(index) + 1
+
+
+def PARENT(index):
+    return math.floor(index / 2)
 
 
 class __AbstractHeap__(object):
     def __init__(self, array=None):
-        if array is None:
-            self._array = []
-
-        else:
-            self._array = array
-
-        self._size = len(self._array)
+        self.array = array or []
+        self.size = len(self.array)
 
     @classmethod
     def build_from_array(cls, array):
         heap = cls(array)
 
-        index = math.floor(heap._size / 2)
+        index = math.floor(heap.size / 2)
 
         while index >= 1:
             heap.heapify(index)
@@ -26,14 +31,14 @@ class __AbstractHeap__(object):
         return heap
 
     def item_at(self, index):  # This is because algorithms are 1-based and Python arrays are 0-based
-        return self._array[index - 1]
+        return self.array[index - 1]
 
     def set_item(self, index, value):
-        if index == len(self._array) + 1:
-            self._array.append(value)
+        if index == len(self.array) + 1:
+            self.array.append(value)
 
         else:
-            self._array[index - 1] = value
+            self.array[index - 1] = value
 
     def swap(self, index_a, index_b):
         """Swap the content of two indexes."""
@@ -44,15 +49,15 @@ class __AbstractHeap__(object):
     def heapify(self, index):
         left = LEFT(index)
         right = RIGHT(index)
-        if left <= self._size and self.precedes(self.item_at(left),
-                                                self.item_at(index)):
+        if left <= self.size and self.precedes(self.item_at(left),
+                                               self.item_at(index)):
             largest = left
 
         else:
             largest = index
 
-        if right <= self._size and self.precedes(self.item_at(right),
-                                                 self.item_at(largest)):
+        if right <= self.size and self.precedes(self.item_at(right),
+                                                self.item_at(largest)):
             largest = right
 
         if largest != index:
@@ -63,22 +68,22 @@ class __AbstractHeap__(object):
         return self.item_at(1)
 
     def extract(self):
-        if self._size < 1:
+        if self.size < 1:
             raise ArithmeticError("heap underflow")
 
         head = self.item_at(1)
-        self.set_item(1, self.item_at(self._size))
+        self.set_item(1, self.item_at(self.size))
 
-        self._size -= 1
-        self._array.pop()
+        self.size -= 1
+        self.array.pop()
 
         self.heapify(1)
         return head
 
     def insert(self, key):
-        self._size += 1
-        self.set_item(self._size, self.border_value())
-        self.change_key(self._size, key)
+        self.size += 1
+        self.set_item(self.size, self.border_value())
+        self.change_key(self.size, key)
 
     def change_key(self, index, new_key):
         if self.precedes(self.item_at(index), new_key):
@@ -104,8 +109,8 @@ class __AbstractHeap__(object):
         return repr(list(self))
 
     def __iter__(self):
-        for index in range(self._size):
-            yield self._array[index]
+        for index in range(self.size):
+            yield self.array[index]
 
     def __eq__(self, other):
         return list(self) == list(other)
@@ -125,7 +130,3 @@ class MaxHeap(__AbstractHeap__):
 
     def border_value(self):
         return float("-inf")
-
-
-class RedBlackTree(object):
-    pass
