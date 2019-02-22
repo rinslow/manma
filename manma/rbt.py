@@ -4,6 +4,10 @@ NO_COLOR = "no color"
 
 
 class NILNode(object):
+    def __init__(self, parent=None):
+        if parent is not None:
+            self.parent = parent
+
     @property
     def color(self):
         return BLACK
@@ -12,7 +16,14 @@ class NILNode(object):
         return "nil"
 
     def __setattr__(self, key, value):
-        pass
+        if key == "parent":
+            self.__dict__[key] = value
+
+        else:
+            pass
+
+    def __eq__(self, other):
+        return isinstance(other, NILNode) or other == "nil"
 
 
 NIL = NILNode()
@@ -22,8 +33,8 @@ class Node(object):
     def __init__(self, key, parent=None, left=None, right=None, color=None):
         self.key = key
         self.parent = parent or NIL
-        self.left = left or NIL
-        self.right = right or NIL
+        self.left = left or NILNode(parent=self)
+        self.right = right or NILNode(parent=self)
         self.color = color or NO_COLOR
 
     def __str__(self):
@@ -35,6 +46,7 @@ class Node(object):
 
     def __eq__(self, other):
         return self.key == other
+
 
 
 class RedBlackTree(object):
@@ -282,15 +294,35 @@ class RedBlackTree(object):
 
         x.color = BLACK
 
-    def inorder_walk(self):  # This is just for my debugging
+    def inorder_walk(self):
         if self.root != NIL:
             for value in RedBlackTree(self.root.left).inorder_walk():
                 yield value
 
-            yield self.root.key
+            yield self.root
 
             for value in RedBlackTree(self.root.right).inorder_walk():
                 yield value
 
     def __repr__(self):
         return repr(list(self.inorder_walk()))
+
+    def search_successor(self, key):
+        """Given a key, find the key closest to it that is equal to it or larger than it.
+
+        Returns:
+            Node. the node with the sought-after key.
+        """
+        # This could be implemented in a much simpler way:
+        # perform a binary search using two pointers, if the key exists return it,
+        # if it doesn't return the next item in the array
+        # However, the asymptotic performances stays O(lgn), which is just what we want :)
+        sought = self.search(key)
+        if sought != NIL:
+            return sought
+
+        self.insert(key)
+        key_node = self.search(key)
+        successor = RedBlackTree(key_node).successor()
+        self.delete(key_node)
+        return successor

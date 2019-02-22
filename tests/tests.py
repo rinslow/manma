@@ -1,3 +1,5 @@
+import pytest
+
 from manma.heap import MinHeap, MaxHeap
 from manma.rbt import RedBlackTree, Node
 
@@ -80,3 +82,32 @@ def test_rbt():
     assert list(tree.inorder_walk()) == list(range(20))
 
     assert RedBlackTree(tree.successor()).predecessor() == tree.root
+
+
+def test_rbt_delete():
+    tree = RedBlackTree()
+    for i in range(20):
+        tree.insert(i)
+
+    tree.delete(tree.search(5))
+
+    assert tree.search(5) == "nil"
+
+    assert tree.search(6) != "nil"
+
+    tree.delete(tree.search(6))
+
+    assert tree.search(6) == "nil"
+
+
+def test_rbt_search_successor():
+    tree = RedBlackTree()
+    for i in range(0, 20):
+        tree.insert(i)
+
+    for i in range(22, 44):
+        tree.insert(i)
+
+    assert tree.search_successor(0) == 0
+    assert tree.search_successor(21) == 22
+    assert tree.search_successor(44) == "nil"
