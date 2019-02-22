@@ -1,5 +1,6 @@
 from .box import Box
 from .rbt import RedBlackTree, NIL
+from .heap import MaxHeap, MinHeap
 
 
 class SideNode(object):
@@ -20,8 +21,11 @@ class SideNode(object):
 class BoxStorage(object):
     def __init__(self):  # O(1)
         self.sides = RedBlackTree()
+        self.volumes_max_heap = MaxHeap()
+        self.volumes_min_heap = MinHeap()
 
     def insert_box(self, side, height):  # O(lgn) + O(lgm) -> O(lgnm)
+        # Red Black Trees  # O(lgn) + O(lgm) -> O(lg(nm))
         side_node = self.sides.search(side)
 
         if side_node == NIL:  # The side we want does not exist
@@ -32,7 +36,23 @@ class BoxStorage(object):
         else:
             side_node.heights.insert(height)
 
-    def remove_box(self, side, height):  # O(lgm) + O(lgn) -> O(lgnm)
+        # Heaps O(lg(max(n, m)))
+        volume = Box(side, height).volume()
+
+        if volume < self.volumes_max_heap.top():
+            self.volumes_max_heap.insert(volume)
+
+        else:
+            self.volumes_min_heap.insert(volume)
+
+        if self.volumes_max_heap.size - self.volumes_min_heap > 1:
+            self.volumes_min_heap.insert(self.volumes_max_heap.extract())
+
+        if self.volumes_min_heap.size - self.volumes_max_heap > 1:
+            self.volumes_max_heap.insert(self.volumes_min_heap.extract())
+
+    def remove_box(self, side, height):  # O(max(n, m))
+        # Red Black Trees: O(lgm) + O(lgn) -> O(lgnm)
         side_node = self.sides.search(side)
         if side_node == NIL:
             raise KeyError("Can't remove box, box does not exist")
@@ -45,6 +65,21 @@ class BoxStorage(object):
 
         if side_node.heights.root == NIL:
             self.sides.delete(side_node)
+
+        volume = Box(side, height).volume()
+
+        # Heaps: Couldn't find a way to find it that's better than O(max(n, m)
+        for index in range(1, len(self.volumes_min_heap.array) + 1):
+            item = self.volumes_min_heap.item_at(index)
+            if item == volume:
+                self.volumes_min_heap.delete_item_at_index(index)
+                return
+
+        for index in range(1, len(self.volumes_max_heap.array) + 1):
+            item = self.volumes_max_heap.item_at(index)
+            if item == volume:
+                self.volumes_max_heap.delete_item_at_index(index)
+                return
 
     def get_box(self, side, height) -> Box:  # O(mlgn)
         """Return the box with minimal volume that answers given criteria."""
@@ -88,4 +123,4 @@ class BoxStorage(object):
 
     def get_median_box(self) -> Box:  # O(1)
         """Return the box with the median volume."""
-        pass
+        return self.volumes_max_heap.top()

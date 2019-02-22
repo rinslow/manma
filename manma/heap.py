@@ -95,6 +95,14 @@ class __AbstractHeap__(object):
             self.swap(index, PARENT(index))
             index = PARENT(index)
 
+    def delete_item_at_index(self, index):
+        self.set_item(index, self.item_at(self.size))
+
+        self.size -= 1
+        self.array.pop()
+
+        self.heapify(index)
+
     def precedes(self, a, b) -> bool:
         """Returns True if a comes before b in the heap."""
         raise NotImplementedError("__AbstractHeap__ can not compare instances, "

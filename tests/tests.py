@@ -1,5 +1,3 @@
-import pytest
-
 from manma.heap import MinHeap, MaxHeap
 from manma.rbt import RedBlackTree, Node
 
@@ -111,3 +109,23 @@ def test_rbt_search_successor():
     assert tree.search_successor(0) == 0
     assert tree.search_successor(21) == 22
     assert tree.search_successor(44) == "nil"
+
+
+def test_heap_delete_item_at_index():
+    heap = MaxHeap.build_from_array([1, 2, 5, 7, 34, 3, 2, 1, 7, 6, 5, 3, 2])
+    assert heap.item_at(3) == 5
+    heap.delete_item_at_index(3)
+
+    assert heap.extract() == 34
+    assert heap.extract() == 7
+    assert heap.extract() == 7
+    assert heap.extract() == 6
+    assert heap.extract() == 5
+    assert heap.extract() == 3
+    assert heap.extract() == 3
+    assert heap.extract() == 2
+    assert heap.extract() == 2
+    assert heap.extract() == 2
+    assert heap.extract() == 1
+    assert heap.extract() == 1
+
