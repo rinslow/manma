@@ -4,23 +4,55 @@ NO_COLOR = "no color"
 
 
 class NILNode(object):
-    def __init__(self, parent=None):
-        if parent is not None:
-            self.parent = parent
+    def __init__(self, parent=None, left=None, right=None, color=BLACK):
+        self._left = None
+        self._right = right or None
+        self._parent = parent or None
+        self._color = color
+
+    @property
+    def left(self):
+        if self._left is not None:
+            return self._left
+
+        return NILNode(parent=self)
+
+    @left.setter
+    def left(self, value):
+        self._left = value
+
+    @property
+    def right(self):
+        if self._left is not None:
+            return self._left
+
+        return NILNode(parent=self)
+
+    @right.setter
+    def right(self, value):
+        self._right = value
+
+    @property
+    def parent(self):
+        if self._parent is not None:
+            return self._parent
+
+        return NILNode()
+
+    @parent.setter
+    def parent(self, value):
+        self._parent = value
 
     @property
     def color(self):
-        return BLACK
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._color = value
 
     def __repr__(self):
         return "nil"
-
-    def __setattr__(self, key, value):
-        if key == "parent":
-            self.__dict__[key] = value
-
-        else:
-            pass
 
     def __eq__(self, other):
         return isinstance(other, NILNode) or other == "nil"
@@ -306,6 +338,12 @@ class RedBlackTree(object):
 
     def __repr__(self):
         return repr(list(self.inorder_walk()))
+
+    def __iter__(self):
+        return iter(self.inorder_walk())
+
+    def __len__(self):
+        return len(list(self.inorder_walk()))
 
     def search_successor(self, key):
         """Given a key, find the key closest to it that is equal to it or larger than it.

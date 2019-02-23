@@ -9,20 +9,20 @@ class SideNode(object):
         self.heights = RedBlackTree()
 
     def __lt__(self, other):  # This is like C#s CompareTo
-        return self.side < other.side
+        return self.side < other
 
     def __eq__(self, other):
-        return self.side == other.side
+        return self.side == other
 
     def __gt__(self, other):
-        return self.side > other.side
+        return self.side > other
 
 
 class BoxStorage(object):
     def __init__(self):  # O(1)
         self.sides = RedBlackTree()
-        self.volumes_max_heap = MaxHeap()
-        self.volumes_min_heap = MinHeap()
+        self.boxes_max_heap = MaxHeap()
+        self.boxes_min_heap = MinHeap()
 
     def insert_box(self, side, height):  # O(lgn) + O(lgm) -> O(lgnm)
         # Red Black Trees  # O(lgn) + O(lgm) -> O(lg(nm))
@@ -34,22 +34,22 @@ class BoxStorage(object):
             self.sides.insert(side_node)
 
         else:
-            side_node.heights.insert(height)
+            side_node.key.heights.insert(height)
 
         # Heaps O(lg(max(n, m)))
-        volume = Box(side, height).volume()
+        box = Box(side, height)
 
-        if volume < self.volumes_max_heap.top():
-            self.volumes_max_heap.insert(volume)
+        if self.boxes_max_heap.size == 0 or box < self.boxes_max_heap.top():
+            self.boxes_max_heap.insert(box)
 
         else:
-            self.volumes_min_heap.insert(volume)
+            self.boxes_min_heap.insert(box)
 
-        if self.volumes_max_heap.size - self.volumes_min_heap > 1:
-            self.volumes_min_heap.insert(self.volumes_max_heap.extract())
+        if self.boxes_max_heap.size - self.boxes_min_heap.size > 1:
+            self.boxes_min_heap.insert(self.boxes_max_heap.extract())
 
-        if self.volumes_min_heap.size - self.volumes_max_heap > 1:
-            self.volumes_max_heap.insert(self.volumes_min_heap.extract())
+        if self.boxes_min_heap.size - self.boxes_max_heap.size > 1:
+            self.boxes_max_heap.insert(self.boxes_min_heap.extract())
 
     def remove_box(self, side, height):  # O(max(n, m))
         # Red Black Trees: O(lgm) + O(lgn) -> O(lgnm)
@@ -57,28 +57,28 @@ class BoxStorage(object):
         if side_node == NIL:
             raise KeyError("Can't remove box, box does not exist")
 
-        height_node = side_node.heights.search(height)
+        height_node = side_node.key.heights.search(height)
         if height_node == NIL:
             raise KeyError("Can't remove box, box does not exist")
 
-        side_node.heights.delete(height_node)
+        side_node.key.heights.delete(height_node)
 
-        if side_node.heights.root == NIL:
+        if side_node.key.heights.root == NIL:
             self.sides.delete(side_node)
 
+        # Heaps: Couldn't find a way to find it that's better than O(max(n, m)
         volume = Box(side, height).volume()
 
-        # Heaps: Couldn't find a way to find it that's better than O(max(n, m)
-        for index in range(1, len(self.volumes_min_heap.array) + 1):
-            item = self.volumes_min_heap.item_at(index)
+        for index in range(1, len(self.boxes_min_heap.array) + 1):
+            item = self.boxes_min_heap.item_at(index)
             if item == volume:
-                self.volumes_min_heap.delete_item_at_index(index)
+                self.boxes_min_heap.delete_item_at_index(index)
                 return
 
-        for index in range(1, len(self.volumes_max_heap.array) + 1):
-            item = self.volumes_max_heap.item_at(index)
+        for index in range(1, len(self.boxes_max_heap.array) + 1):
+            item = self.boxes_max_heap.item_at(index)
             if item == volume:
-                self.volumes_max_heap.delete_item_at_index(index)
+                self.boxes_max_heap.delete_item_at_index(index)
                 return
 
     def get_box(self, side, height) -> Box:  # O(mlgn)
@@ -123,4 +123,4 @@ class BoxStorage(object):
 
     def get_median_box(self) -> Box:  # O(1)
         """Return the box with the median volume."""
-        return self.volumes_max_heap.top()
+        return self.boxes_max_heap.top()
