@@ -646,47 +646,6 @@ public class RedBlackTree<T extends Comparable<T>> {
 
     }// end search(int key)
 
-    // @param: key, any Comparable object
-    // @return: return's the number of elements greater than key
-    public int numGreater(T key){
-
-        // Call findNumGreater(root, key) which will return the number
-        // of nodes whose key is greater than key
-        return findNumGreater(root,key);
-
-    }// end numGreater(int key)
-
-
-    // @param: key, any Comparable object
-    // @return: return's teh number of elements smaller than key
-    public int numSmaller(T key){
-
-        // Call findNumSmaller(root,key) which will return
-        // the number of nodes whose key is greater than key
-        return findNumSmaller(root,key);
-
-    }// end numSmaller(int key)
-
-
-    // @param: node, the root of the tree, the key who we must
-    // compare other node key's to.
-    // @return: the number of nodes greater than key.
-    public int findNumGreater(RedBlackNode<T> node, T key){
-
-        // Base Case: if node is nil, return 0
-        if (isNil(node))
-            return 0;
-            // If key is less than node.key, all elements right of node are
-            // greater than key, add this to our total and look to the left
-        else if (key.compareTo(node.key) < 0)
-            return 1+ node.numRight + findNumGreater(node.left,key);
-
-            // If key is greater than node.key, then look to the right as
-            // all elements to the left of node are smaller than key
-        else
-            return findNumGreater(node.right,key);
-
-    }// end findNumGreater(RedBlackNode, int key)
 
     /**
      * Returns sorted list of keys greater than key.  Size of list
@@ -714,28 +673,6 @@ public class RedBlackTree<T extends Comparable<T>> {
             getGreaterOrEqualsThan(node.right, key, list);
         }
     }
-
-    // @param: node, the root of the tree, the key who we must compare other
-    // node key's to.
-    // @return: the number of nodes smaller than key.
-    public int findNumSmaller(RedBlackNode<T> node, T key){
-
-        // Base Case: if node is nil, return 0
-        if (isNil(node)) return 0;
-
-            // If key is less than node.key, look to the left as all
-            // elements on the right of node are greater than key
-        else if (key.compareTo(node.key) <= 0)
-            return findNumSmaller(node.left,key);
-
-            // If key is larger than node.key, all elements to the left of
-            // node are smaller than key, add this to our total and look
-            // to the right.
-        else
-            return 1+ node.numLeft + findNumSmaller(node.right,key);
-
-    }// end findNumSmaller(RedBlackNode nod, int key)
-
 
     // @param: node, the RedBlackNode we must check to see whether it's nil
     // @return: return's true of node is nil and false otherwise
