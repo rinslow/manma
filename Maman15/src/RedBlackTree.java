@@ -392,6 +392,12 @@ public class RedBlackTree<T extends Comparable<T>> {
         RedBlackNode<T> keyNode = this.search(key);
         RedBlackNode<T> successor = this.treeSuccessor(keyNode);
         this.remove(keyNode);
+
+        if(isNil(successor))
+        {
+            return null;
+        }
+
         return successor;
     }
 
@@ -675,7 +681,7 @@ public class RedBlackTree<T extends Comparable<T>> {
     }
 
     // @param: node, the RedBlackNode we must check to see whether it's nil
-    // @return: return's true of node is nil and false otherwise
+    // @return: return's true if node is nil and false otherwise
     private boolean isNil(RedBlackNode node){
 
         // return appropriate value

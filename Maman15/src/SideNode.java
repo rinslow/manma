@@ -11,4 +11,18 @@ public class SideNode implements Comparable<SideNode> {
     public int compareTo(SideNode node) {
         return Double.compare(this.side, node.side);
     }
-}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!SideNode.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final SideNode other = (SideNode) obj;
+        return other.compareTo(this) == 0;
+    }
+    }
