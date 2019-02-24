@@ -32,27 +32,31 @@ public class BoxStorage {
         SideNode sideNode = new SideNode(side);
 
         double minimalVolume = Double.MAX_VALUE;
-        double minimalSide = 0;
-        double minimalHeight = 0;
+        double minimalVolumeSide = 0;
+        double minimalVolumeHeight = 0;
 
         for (SideNode matchSideNode : this.sides.getGreaterOrEqualsThan(sideNode, this.sides.size())){
-            for (double matchHeight : matchSideNode.heights.getGreaterOrEqualsThan(height, matchSideNode.heights.size())){
-                double volume = matchSideNode.side * matchSideNode.side * matchHeight;
-                if(volume < minimalVolume){
-                    minimalVolume = volume;
-                    minimalHeight = matchHeight;
-                    minimalSide = matchSideNode.side;
-                }
+
+            RedBlackNode<Double> minimalHeightNode = matchSideNode.heights.serachSuccessor(height);
+            if(minimalHeightNode == null){
+                continue;
+            }
+
+            double volume = matchSideNode.side * matchSideNode.side * minimalHeightNode.key;
+            if(volume < minimalVolume){
+                minimalVolume = volume;
+                minimalVolumeHeight = minimalHeightNode.key;
+                minimalVolumeSide = matchSideNode.side;
             }
         }
 
-        return new Box(minimalSide,minimalHeight);
+        return new Box(minimalVolumeSide,minimalVolumeHeight);
     }
 
     public boolean checkBox(double side, double height) {
         SideNode sideNode = new SideNode(side);
         for (SideNode matchSideNode : this.sides.getGreaterOrEqualsThan(sideNode, this.sides.size())) {
-            if (matchSideNode.heights.numGreater(height) > 0)
+            if (matchSideNode.heights.serachSuccessor(height) != null)
                 return true;
         }
 

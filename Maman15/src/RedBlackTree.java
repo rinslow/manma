@@ -371,6 +371,30 @@ public class RedBlackTree<T extends Comparable<T>> {
     }// end treeMinimum(RedBlackNode x)
 
 
+    // @param: key
+    //Given a key, find the key closest to it that is equal to it or larger than it.
+    public RedBlackNode<T> serachSuccessor(T key)
+    {
+        /*
+        This could be implemented in a much simpler way:
+        perform a binary search using two pointers, if the key exists return it,
+        if it doesn't return the next item in the array
+        However, the asymptotic performances stays O(lgn), which is just what we want :)
+        */
+
+        RedBlackNode<T> sought = this.search(key);
+        if (sought != null)
+        {
+            return  sought;
+        }
+
+        this.insert(key);
+        RedBlackNode<T> keyNode = this.search(key);
+        RedBlackNode<T> successor = this.treeSuccessor(keyNode);
+        this.remove(keyNode);
+        return successor;
+    }
+
     // @param: z, the RedBlackNode which is to be removed from the the tree
     // Remove's z from the RedBlackTree rooted at root
     public void remove(RedBlackNode<T> v){
