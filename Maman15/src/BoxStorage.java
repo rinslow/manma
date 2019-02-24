@@ -2,10 +2,18 @@ public class BoxStorage {
 
     private RedBlackTree<SideNode> sides;
 
+    /**
+     * The BoxStorage class represent the storage of the workshop.
+     * We choose to use RedBlackTree to keep all the available sides.
+     * Each node contain a RedBlackTree of the available heights.
+     */
     BoxStorage(){
         this.sides = new RedBlackTree<>();
     }
 
+    // @param: side and height
+    // insert the box to the storage. If the side already exists we add the new height to his heights tree.
+    //O(lgnm)
     public void insertBox(double side, double height){
         System.out.println("Insert new box - height: " + height + " ,side: " + side);
 
@@ -22,6 +30,9 @@ public class BoxStorage {
         }
     }
 
+    // @param: side and height
+    // remove the box from the storage.
+    //O(lgnm)
     public void removeBox(double side, double height){
         System.out.println("Remove box - height: " + height + " ,side: " + side);
 
@@ -30,6 +41,9 @@ public class BoxStorage {
         existedSideNode.key.heights.remove(existedSideNode.key.heights.search(height));
     }
 
+    // @param: side and height
+    // @return: the mach box
+    //O(mlgn)
     public Box getBox(double side, double height){
         System.out.println("Get box - height: " + height + " ,side: " + side);
 
@@ -59,6 +73,9 @@ public class BoxStorage {
         return new Box(minimalVolumeSide,minimalVolumeHeight);
     }
 
+    // @param: side and height
+    // @return: true if mach box exists, otherwise false
+    //O(mlgn)
     public boolean checkBox(double side, double height) {
         System.out.println("Check if box exists - height: " + height + " ,side: " + side);
 

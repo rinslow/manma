@@ -7,7 +7,7 @@ public class WorkShop {
 
     /**
      * Application entry point.
-     *
+     * The application get a filepath as an argument, read it and execute the file commands
      * @param args application command line arguments
      */
     public static void main(String[] args) {
@@ -23,6 +23,7 @@ public class WorkShop {
     }
 
     private static void runCommand(BoxStorage boxStorage, String command) {
+        
         double side = (double) Character.digit(command.charAt(command.indexOf('(') + 1 ), 10);
         double heigth = (double) Character.digit(command.charAt(command.indexOf(')')- 1 ), 10);
         if (command.startsWith("INSERTBOX")){
